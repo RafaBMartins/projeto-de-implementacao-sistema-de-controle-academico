@@ -13,7 +13,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS " \
 
 cursor.execute("CREATE TABLE IF NOT EXISTS " \
 "Matricula(id SERIAL NOT NULL,"\
-"cpf_aluno VARCHAR(11) NOT NULL," \
+"cpf_aluno UNIQUE VARCHAR(11) NOT NULL," \
 "codigo_disciplina VARCHAR(10) NOT NULL," \
 "data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," \
 "CONSTRAINT pk_matricula PRIMARY KEY (id)," \
