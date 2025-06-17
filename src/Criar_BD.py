@@ -5,7 +5,7 @@ banco=sq3.connect('controle_academico.db')
 cursor=banco.cursor()
 
 cursor.execute("CREATE TABLE IF NOT EXISTS " \
-"Disciplina(codigo VARCHAR(10) NOT NULL," \
+"Disciplina(codigo UNIQUE VARCHAR(10) NOT NULL," \
 "nome VARCHAR(100) NOT NULL," \
 "carga_horaria INT NOT NULL," \
 "professor VARCHAR(100) NOT NULL," \

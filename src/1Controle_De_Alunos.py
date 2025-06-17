@@ -11,13 +11,13 @@ while True:
         cursor=banco.cursor()
 
         nome_aluno=input('Informe o nome: ')
-        cpf=int(input('Informe o CPF: '))
-        idade=int(input('Informe a idade: '))
+        cpf=str(input('Informe o CPF: '))
+        idade=str(input('Informe a idade: '))
         email=input('Informe o e-mail: ')
         cep=input('Informe o CEP: ')
 
         endereco="cep" #Implementar conexão com correios
-        cursor.execute('INSERT INTO Aluno VALUES("'+str(cpf)+'","'+nome_aluno+'","'+str(idade)+'","'+email+'","'+endereco+'")')
+        cursor.execute('INSERT INTO Aluno VALUES("'+cpf+'","'+nome_aluno+'","'+idade+'","'+email+'","'+endereco+'")')
 
         banco.commit()
         
@@ -30,7 +30,23 @@ while True:
     finally:
         banco.close()
     break
+#codigo para atualizar um aluno
 
+cpf=input('Informe o CPF do aluno a ser atualizado')
 
+banco=sq3.connect('controle_academico.db')
 
+cursor=banco.cursor()
+
+cursor.execute("SELECT * FROM Aluno WHERE cpf =?",(cpf,))
+
+registro=cursor.fetchone()
+
+banco.close()
+
+if not registro:
+    print("CPF não encontrado")
+else:
+    
+    
 
