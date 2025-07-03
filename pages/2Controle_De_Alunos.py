@@ -45,6 +45,7 @@ with col1:
                     aluno_controller = AlunoControler(aluno)
                     aluno_controller.atualizar_aluno()
                     st.success("Aluno atualizado com sucesso")
+                    st.rerun()
                 except Exception as erro_message:
                     st.error(erro_message)
 
@@ -80,7 +81,11 @@ with col2:
         alunos = aluno_controller.buscar_todos_alunos()
 
         if not alunos:
-            st.table(pd.DataFrame([["Nenhum aluno encontrado"]], columns=["Mensagem"]))
+            df = pd.DataFrame([["Nenhum aluno encontrado"]], columns=["Mensagem"])
+            st.table(df)
+
+            if st.button("Exportar"):
+                df.to_csv("output/alunos.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)
         else:
             alunos_list = [[aluno.cpf, aluno.nome, aluno.idade, aluno.email, aluno.cep] for aluno in alunos]
 
@@ -94,6 +99,7 @@ with col2:
 
             df = pd.DataFrame(alunos_list, columns=["CPF", "Nome", "Idade", "E-mail", "CEP", "Logradouro", "Bairro", "Cidade"])
             st.table(df)
+            st.write("Total de alunos cadastrados: ", len(alunos))
 
             if st.button("Exportar"):
                 df.to_csv("output/alunos.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)

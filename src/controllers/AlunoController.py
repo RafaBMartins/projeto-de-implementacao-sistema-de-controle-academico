@@ -41,6 +41,10 @@ class AlunoControler:
             aluno_dao = AlunoDAO()
             aluno_dao.delete(cpf)
             return
+        except sqlite3.IntegrityError as erro:
+            if "FOREIGN KEY constraint failed" in str(erro):
+                raise Exception("Aluno possui matrícula cadastrada")
+            raise Exception(f"Erro ao deletar aluno: {erro}")
         except sqlite3.Error:
             raise Exception("Aluno não encontrado")
         except Exception as erro:

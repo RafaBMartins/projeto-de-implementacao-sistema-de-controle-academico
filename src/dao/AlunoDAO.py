@@ -10,6 +10,7 @@ class AlunoDAO:
     def abrir_conexao(self):
         db_path = os.path.join(os.path.dirname(__file__), '..', '..', 'registro_academico.db')
         conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON")
         return conn
     
     def insert(self):

@@ -1,11 +1,17 @@
 import streamlit as st
 import pandas as pd
 import csv
+from datetime import datetime
 from src.models.MatriculaModel import MatriculaModel
+from src.controllers.MatriculaController import MatriculaController
+from src.controllers.AlunoController import AlunoControler
+from src.controllers.DisciplinaController import DisciplinaController
+
+st.set_page_config(layout="wide")
 
 st.title("Controle De Matriculas")
 
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns([1, 2])
 
 with col1:
     tab_matricular, tab_cancelar = st.tabs(["Cadastrar", "Deletar"])
@@ -13,33 +19,60 @@ with col1:
     with tab_matricular:
         with st.form("form_matricular_aluno"):
             st.write("Matricular Aluno")
-            cpf_aluno = st.text_input("CPF: ", placeholder="Informe o CPF do aluno")
-            codigo_disciplina = st.text_input("Código: ", placeholder="Informe o código da disciplina")
-            st.form_submit_button("Cadastrar")
+            aluno_controller = AlunoControler()
+            alunos = aluno_controller.buscar_todos_alunos()
+            cpf_aluno = st.selectbox("Aluno: ", [aluno.cpf for aluno in alunos], placeholder="Selecione um aluno")
+            disciplina_controller = DisciplinaController()
+            disciplinas = disciplina_controller.buscar_todas_disciplinas()
+            codigo_disciplina = st.selectbox("Disciplina: ", [disciplina.codigo for disciplina in disciplinas], placeholder="Selecione uma disciplina")
+            if st.form_submit_button("Cadastrar"):
+                matricula = MatriculaModel(cpf_aluno, codigo_disciplina, None)
+                try:
+                    matricula_controller = MatriculaController(matricula)
+                    matricula_controller.cadastrar_matricula()
+                    st.success("Matricula cadastrada com sucesso")
+                except Exception as erro_message:
+                    st.error(erro_message)
+
 
     with tab_cancelar:
         with st.form("form_deletar_matricula"):
             st.write("Cancelar Matrícula")
-            cpf_aluno = st.text_input("CPF: ", placeholder="Informe o CPF do aluno")
-            codigo_disciplina = st.text_input("Código: ", placeholder="Informe o código da disciplina")
-            st.form_submit_button("Deletar", type="primary")
+            aluno_controller = AlunoControler()
+            alunos = aluno_controller.buscar_todos_alunos()
+            cpf_aluno = st.selectbox("Aluno: ", [aluno.cpf for aluno in alunos], placeholder="Selecione um aluno")
+            disciplina_controller = DisciplinaController()
+            disciplinas = disciplina_controller.buscar_todas_disciplinas()
+            codigo_disciplina = st.selectbox("Disciplina: ", [disciplina.codigo for disciplina in disciplinas], placeholder="Selecione uma disciplina")
+            if st.form_submit_button("Deletar", type="primary"):
+                try:
+                    matricula_controller = MatriculaController()
+                    matricula_controller.deletar_matricula(cpf_aluno, codigo_disciplina)
+                    st.success("Matricula deletada com sucesso")
+                except Exception as erro_message:
+                    st.error(erro_message)
 
 with col2:
     st.subheader("Matriculas Cadastradas")
 
-    #Vou criar 5 objetos MatriculaModel para simular que o dado vem do banco de dados para montar a tabela
-    matricula1 = MatriculaModel(1, "12345678901", "12345678901", "2023-01-01 00:00:00")
-    matricula2 = MatriculaModel(2, "12345678902", "12345678902", "2023-02-01 00:00:00")
-    matricula3 = MatriculaModel(3, "12345678903", "12345678903", "2023-03-01 00:00:00")
-    matricula4 = MatriculaModel(4, "12345678904", "12345678904", "2023-04-01 00:00:00")
-    matricula5 = MatriculaModel(5, "12345678905", "12345678905", "2023-05-01 00:00:00")
-    matriculas = [matricula1, matricula2, matricula3, matricula4, matricula5]
+    try:
+        matricula_controller = MatriculaController()
+        matriculas = matricula_controller.buscar_todas_matriculas()
 
-    matriculas_dict = [[matricula.cpf_aluno, matricula.codigo_disciplina, matricula.data_hora] for matricula in matriculas]
+        if not matriculas:
+            df = pd.DataFrame([["Nenhuma matricula encontrada"]], columns=["Mensagem"])
+            st.table(df)
 
-    df = pd.DataFrame(matriculas_dict, columns=["CPF Aluno", "Código Disciplina", "Data Hora"])
+            if st.button("Exportar"):
+                df.to_csv("output/matriculas.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)
+        else:
+            matriculas_list = [[matricula.cpf_aluno, matricula.codigo_disciplina, datetime.strptime(matricula.data_hora, "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y %H:%M:%S")] for matricula in matriculas]
+            df = pd.DataFrame(matriculas_list, columns=["CPF Aluno", "Código Disciplina", "Data/Hora"])
+            st.table(df)
+            st.write("Total de matriculas cadastradas: ", len(matriculas))
 
-    st.table(df)
+            if st.button("Exportar"):
+                df.to_csv("output/matriculas.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)
 
-    if st.button("Exportar"):
-        df.to_csv("output/matriculas.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)
+    except Exception as erro_message:
+        st.error(erro_message)

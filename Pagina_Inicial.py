@@ -16,7 +16,7 @@ def criando_tabelas_banco_de_dados():
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS alunos (cpf TEXT PRIMARY KEY, nome TEXT NOT NULL, idade INTEGER NOT NULL, email TEXT NOT NULL, cep TEXT NOT NULL)")
     cursor.execute("CREATE TABLE IF NOT EXISTS disciplinas (codigo TEXT PRIMARY KEY, nome TEXT NOT NULL, carga_horaria INTEGER NOT NULL, professor TEXT NOT NULL)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS matriculas (cpf_aluno TEXT, codigo_disciplina TEXT, data_hora CURRENT_TIMESTAMP, FOREIGN KEY (cpf_aluno) REFERENCES alunos(cpf), FOREIGN KEY (codigo_disciplina) REFERENCES disciplinas(codigo))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS matriculas (cpf_aluno TEXT, codigo_disciplina TEXT, data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cpf_aluno) REFERENCES alunos(cpf), FOREIGN KEY (codigo_disciplina) REFERENCES disciplinas(codigo))")
     conn.commit()
     conn.close()
 
