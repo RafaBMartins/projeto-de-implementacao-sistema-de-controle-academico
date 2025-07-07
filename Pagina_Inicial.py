@@ -14,7 +14,7 @@ st.write("https://github.com/RafaBMartins/projeto-de-implementacao-sistema-de-co
 def criando_tabelas_banco_de_dados():
     conn = sq3.connect('registro_academico.db')
     cursor = conn.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS alunos (cpf TEXT PRIMARY KEY, nome TEXT NOT NULL, idade INTEGER NOT NULL, email TEXT NOT NULL, cep TEXT NOT NULL)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS alunos (cpf TEXT PRIMARY KEY, nome TEXT NOT NULL, idade INTEGER NOT NULL, email TEXT NOT NULL, cep TEXT NOT NULL, logradouro TEXT NOT NULL, bairro TEXT NOT NULL, cidade TEXT NOT NULL)")
     cursor.execute("CREATE TABLE IF NOT EXISTS disciplinas (codigo TEXT PRIMARY KEY, nome TEXT NOT NULL, carga_horaria INTEGER NOT NULL, professor TEXT NOT NULL)")
     cursor.execute("CREATE TABLE IF NOT EXISTS matriculas (cpf_aluno TEXT, codigo_disciplina TEXT, data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cpf_aluno) REFERENCES alunos(cpf), FOREIGN KEY (codigo_disciplina) REFERENCES disciplinas(codigo))")
     conn.commit()

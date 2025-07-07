@@ -87,15 +87,7 @@ with col2:
             if st.button("Exportar"):
                 df.to_csv("output/alunos.csv", index=False, sep=";", header=False, quoting=csv.QUOTE_NONNUMERIC)
         else:
-            alunos_list = [[aluno.cpf, aluno.nome, aluno.idade, aluno.email, aluno.cep] for aluno in alunos]
-
-            for aluno in alunos_list:
-                PATH_CORREIOS = f"https://viacep.com.br/ws/{aluno[4]}/json/"
-                response = requests.get(PATH_CORREIOS)
-                endereco = response.json()
-                aluno.append(endereco["logradouro"])
-                aluno.append(endereco["bairro"])
-                aluno.append(endereco["localidade"])
+            alunos_list = [[aluno.cpf, aluno.nome, aluno.idade, aluno.email, aluno.cep, aluno.logradouro, aluno.bairro, aluno.cidade] for aluno in alunos]
 
             df = pd.DataFrame(alunos_list, columns=["CPF", "Nome", "Idade", "E-mail", "CEP", "Logradouro", "Bairro", "Cidade"])
             st.table(df)

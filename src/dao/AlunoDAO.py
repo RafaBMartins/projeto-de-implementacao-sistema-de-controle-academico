@@ -19,9 +19,9 @@ class AlunoDAO:
             cursor = conn.cursor()
 
             cursor.execute('''
-                INSERT INTO alunos (cpf, nome, idade, email, cep)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (self.aluno.cpf, self.aluno.nome, self.aluno.idade, self.aluno.email, self.aluno.cep))
+                INSERT INTO alunos (cpf, nome, idade, email, cep, logradouro, bairro, cidade)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (self.aluno.cpf, self.aluno.nome, self.aluno.idade, self.aluno.email, self.aluno.cep, self.aluno.logradouro, self.aluno.bairro, self.aluno.cidade))
 
             conn.commit()
             return
@@ -37,9 +37,9 @@ class AlunoDAO:
 
             cursor.execute('''
                 UPDATE alunos
-                SET nome = COALESCE(NULLIF(?, ''), nome), idade = COALESCE(NULLIF(?, 0), idade), email = COALESCE(NULLIF(?, ''), email), cep = COALESCE(NULLIF(?, ''), cep)
+                SET nome = COALESCE(NULLIF(?, ''), nome), idade = COALESCE(NULLIF(?, 0), idade), email = COALESCE(NULLIF(?, ''), email), cep = COALESCE(NULLIF(?, ''), cep), logradouro = COALESCE(NULLIF(?, ''), logradouro), bairro = COALESCE(NULLIF(?, ''), bairro), cidade = COALESCE(NULLIF(?, ''), cidade)
                 WHERE cpf = ?
-            ''', (self.aluno.nome, self.aluno.idade, self.aluno.email, self.aluno.cep, self.aluno.cpf))
+            ''', (self.aluno.nome, self.aluno.idade, self.aluno.email, self.aluno.cep, self.aluno.logradouro, self.aluno.bairro, self.aluno.cidade, self.aluno.cpf))
 
             conn.commit()
             return
